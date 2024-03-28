@@ -17,12 +17,12 @@ class MainMenu(arcade.View):
 
     def on_show_view(self):
         # Init
-        btn_start_texture = arcade.load_texture(f"{DIR}\\assets\\images\\common\\blue_button\\blue_button02.png")
-        btn_exit_texture = arcade.load_texture(f"{DIR}\\assets\\images\\common\\red_button\\red_button01.png")
+        btn_start_texture = arcade.load_texture(f"{DIR}/assets/images/common/blue_button/blue_button02.png")
+        btn_exit_texture = arcade.load_texture(f"{DIR}/assets/images/common/red_button/red_button01.png")
 
         # Premiere
         arcade.set_background_color(arcade.color.WHITE)
-        self.menu = arcade.load_texture(f"{DIR}\\assets\\images\\menu\\blue_panel.png")
+        self.menu = arcade.load_texture(f"{DIR}/assets/images/menu/blue_panel.png")
         self.btn_start = Button("Start", btn_start_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + BUTTON_HEIGHT // 2 + GAP_BETWEEN_BUTTONS, 180, 40)
         self.btn_exit = Button("Exit", btn_exit_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - GAP_BETWEEN_BUTTONS, 180, 40)
 

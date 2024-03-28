@@ -13,8 +13,8 @@ class Alert():
     def setup(self):
         popup_x = (SCREEN_WIDTH - POPUP_WIDTH) // 2
         popup_y = (SCREEN_HEIGHT - POPUP_HEIGHT) // 2
-        self.panel = arcade.load_texture(f"{DIR}\\assets\\images\\dialog\\glassPanel.png")
-        self.btn_again_texture = arcade.load_texture(f"{DIR}\\assets\\images\\common\\blue_button\\blue_button02.png")
+        self.panel = arcade.load_texture(f"{DIR}/assets/images/dialog/glassPanel.png")
+        self.btn_again_texture = arcade.load_texture(f"{DIR}/assets/images/common/blue_button/blue_button02.png")
         self.btn_again = Button("Again", self.btn_again_texture, popup_x + POPUP_WIDTH // 2, popup_y + POPUP_HEIGHT // 2, 100, 50)
     
     def draw_alert(self, data):

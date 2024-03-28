@@ -22,9 +22,9 @@ class Setting():
         button_y = popup_y + POPUP_HEIGHT // 4
         button_x2 = button_x1 + BUTTON_WIDTH + BUTTON_MARGIN
 
-        self.panel = arcade.load_texture(f"{DIR}\\assets\\images\\dialog\\metalPanel_blueCorner.png")
-        btn_restart_texture = arcade.load_texture(f"{DIR}\\assets\\images\\common\\blue_button\\blue_button02.png")
-        btn_exit_texture = arcade.load_texture(f"{DIR}\\assets\\images\\common\\red_button\\red_button01.png")
+        self.panel = arcade.load_texture(f"{DIR}/assets/images/dialog/metalPanel_blueCorner.png")
+        btn_restart_texture = arcade.load_texture(f"{DIR}/assets/images/common/blue_button/blue_button02.png")
+        btn_exit_texture = arcade.load_texture(f"{DIR}/assets/images/common/red_button/red_button01.png")
         self.btn_restart = Button("Restart", btn_restart_texture, button_x1, button_y, 100, 50)
         self.btn_exit = Button("Exit", btn_exit_texture, button_x2, button_y, 100, 50)
 

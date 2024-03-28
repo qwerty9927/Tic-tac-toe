@@ -41,17 +41,18 @@ class Game(arcade.View):
         self.setting = Setting()
         self.alert = Alert()
 
+
     def setup(self):
         self.board = [[' ' for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
         # Load media
-        self.x_sound = arcade.load_sound(f"{DIR}\\assets\\sounds\\rollover1.ogg")
-        self.o_sound = arcade.load_sound(f"{DIR}\\assets\\sounds\\rollover2.ogg")
+        self.x_sound = arcade.load_sound(f"{DIR}/assets/sounds/rollover1.wav")
+        self.o_sound = arcade.load_sound(f"{DIR}/assets/sounds/rollover2.wav")
 
         # Load image
-        self.x = arcade.load_texture(f"{DIR}\\assets\\images\\common\\cross.png")
-        self.o = arcade.load_texture(f"{DIR}\\assets\\images\\common\\target.png")
+        self.x = arcade.load_texture(f"{DIR}/assets/images/common/cross.png")
+        self.o = arcade.load_texture(f"{DIR}/assets/images/common/target.png")
 
     def on_show_view(self):
         self.setup()
