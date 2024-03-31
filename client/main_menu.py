@@ -22,7 +22,6 @@ class MainMenu(arcade.View):
         self.btn_exit = None
         self.btn_start_sound = None
         self.btn_exit_sound = None
-        self.font = arcade.load_font(f"{DIR}/assets/fonts/kenvector_future.ttf")
 
     def on_show_view(self):
         # Load image
@@ -37,14 +36,14 @@ class MainMenu(arcade.View):
         # Premiere
         arcade.set_background_color(arcade.color.WHITE)
         self.menu = arcade.load_texture(f"{DIR}/assets/images/menu/blue_panel.png")
-        self.btn_start = Button("Start vs human", self.font, btn_start_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + BUTTON_HEIGHT + GAP_BETWEEN_BUTTONS * 2, 180, 40)
-        self.btn_start_vs_bot = Button("Start vs bot", self.font, btn_start_vs_bot_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + BUTTON_HEIGHT - GAP_BETWEEN_BUTTONS, 180, 40)
-        self.btn_exit = Button("Exit", self.font, btn_exit_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 -  BUTTON_HEIGHT, 180, 40)
+        self.btn_start = Button("Start vs human", btn_start_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + BUTTON_HEIGHT + GAP_BETWEEN_BUTTONS * 2, 180, 40)
+        self.btn_start_vs_bot = Button("Start vs bot", btn_start_vs_bot_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + BUTTON_HEIGHT - GAP_BETWEEN_BUTTONS, 180, 40)
+        self.btn_exit = Button("Exit", btn_exit_texture, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 -  BUTTON_HEIGHT, 180, 40)
 
     def on_draw(self):
         self.clear()
         arcade.draw_text("Tic Tac Toe", SCREEN_WIDTH // 2, 2 * (SCREEN_HEIGHT // 3) + (SCREEN_HEIGHT // 6),
-            arcade.color.BLACK, 30, anchor_x="center", font_name=self.font)
+            arcade.color.BLACK, 30, anchor_x="center")
         self.draw_panel()
         self.btn_start.draw()
         self.btn_start_vs_bot.draw()
