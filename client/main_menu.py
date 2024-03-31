@@ -61,16 +61,17 @@ class MainMenu(arcade.View):
             thread = threading.Thread(target=client_socket.receive_data)
             thread.start()
             self.pick_sound()
-            time.sleep(1)
+            time.sleep(0.5)
             print("Start vs human")
             self.window.show_view(Game(client_socket, thread))
         if (x >= self.btn_start_vs_bot.start_btn_x and x <= self.btn_start_vs_bot.end_btn_x) and (y >= self.btn_start_vs_bot.start_btn_y and y <= self.btn_start_vs_bot.end_btn_y):
             self.pick_sound()
-            time.sleep(1)
+            time.sleep(0.5)
             print("Start vs bot")
+            self.window.show_view(Game(None, None, True))
         if (x >= self.btn_exit.start_btn_x and x <= self.btn_exit.end_btn_x) and (y >= self.btn_exit.start_btn_y and y <= self.btn_exit.end_btn_y):
             self.pick_sound(EXIT)
-            time.sleep(1)
+            time.sleep(0.5)
             print("Exit")
             self.window.close()
 

@@ -34,7 +34,7 @@ class Alert():
     
     def pick_content(self, data):
         if data != None:
-            return f"{data} is winner!"
+            return f"{'X' if data == X_PATTERN else 'O'} is winner!"
         return "Draw!"
         
     def control(self, x: int, y: int, parent_view):

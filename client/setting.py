@@ -49,7 +49,8 @@ class Setting():
             parent_view.is_restart = True
         if (x >= self.btn_exit.start_btn_x and x <= self.btn_exit.end_btn_x) and (y >= self.btn_exit.start_btn_y and y <= self.btn_exit.end_btn_y):
             # parent_view.thread.exit()
-            parent_view.client_socket.close_connection()
+            if parent_view.client_socket:
+                parent_view.client_socket.close_connection()
             parent_view.window.close()
 
 def main():

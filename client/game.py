@@ -1,22 +1,22 @@
 import arcade
-import threading
-from client import Client
+import numpy as np
+import copy
 from os import path
 from constants import *
 from setting import Setting
 from alert import Alert
+from bot.mainBot import MainBot
 
 DIR = path.dirname(path.abspath(__file__))
 
 class Game(arcade.View):
-    def __init__(self, socket, thread, window: arcade.Window = None):
+    def __init__(self, socket, thread, is_bot_game = False, window: arcade.Window = None):
         super().__init__(window)
-        # self.client_socket = Client()
-        # self.client_socket.connect_to_server()
-        # threading.Thread(target=self.client_socket.receive_data).start()
         self.thread = thread
         self.client_socket = socket
         self.board = None
+        self.size = 3
+        self.is_bot_game = is_bot_game
 
         # State
         self.current_player = X_PATTERN
@@ -43,7 +43,10 @@ class Game(arcade.View):
 
 
     def setup(self):
-        self.board = [[' ' for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+        if self.is_bot_game:
+            self.board = np.zeros(shape=(self.size, self.size), dtype=int)
+        else:
+            self.board = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
         # Load media
@@ -103,24 +106,39 @@ class Game(arcade.View):
             column = x // SQUARE_SIZE
             row = y // SQUARE_SIZE
 
-            if self.board[row][column] == ' ':
+            if self.board[row][column] == 0:
                 self.board[row][column] = self.current_player
                 self.is_game_over = self.game_over(self.current_player)
-                self.client_socket.send_data({
-                    "board": self.board, 
-                    "player": self.current_player, 
-                    "next_player": self.switch_player(), 
-                    "is_game_over": self.is_game_over,
-                    "is_new_response": True,
-                    "is_restart": False
-                })
-                self.pick_sound(self.current_player)
-                self.on_draw()
-                self.is_locked = True
+                if not self.is_bot_game:
+                    self.client_socket.send_data({
+                        "board": self.board, 
+                        "player": self.current_player, 
+                        "next_player": self.switch_player(), 
+                        "is_game_over": self.is_game_over,
+                        "is_new_response": True,
+                        "is_restart": False
+                    })
+                    self.pick_sound(self.current_player)
+                    self.on_draw()
+                    self.is_locked = True
+                else:
+                    if not self.is_game_over:
+                        self.bot_move()
+            
         elif self.setting_popup_visible:
             self.setting.control(x, y, self)
         elif self.alert_popup_visible:
             self.alert.control(x, y, self)
+
+    def bot_move(self):
+        print("Bot move")
+        self.is_locked = True
+        row, col = MainBot.main(copy.deepcopy(self.board), X_PATTERN)
+        self.board[row][col] = O_PATTERN
+        self.pick_sound(O_PATTERN)
+        self.on_draw()
+        self.game_over(O_PATTERN)
+        self.is_locked = False
 
     def switch_player(self):
         return O_PATTERN if self.current_player == X_PATTERN else X_PATTERN
@@ -146,16 +164,16 @@ class Game(arcade.View):
 
     def check_win(self):
         for row in range(BOARD_SIZE):
-            if self.board[row][0] == self.board[row][1] == self.board[row][2] != ' ':
+            if self.board[row][0] == self.board[row][1] == self.board[row][2] != 0:
                 return True
 
         for col in range(BOARD_SIZE):
-            if self.board[0][col] == self.board[1][col] == self.board[2][col] != ' ':
+            if self.board[0][col] == self.board[1][col] == self.board[2][col] != 0:
                 return True
 
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] != ' ':
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
             return True
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] != ' ':
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
             return True
 
         return False
@@ -163,14 +181,15 @@ class Game(arcade.View):
     def check_tie(self):
         for row in range(BOARD_SIZE):
             for col in range(BOARD_SIZE):
-                if self.board[row][col] == ' ':
+                if self.board[row][col] == 0:
                     return False
         return True
     
     def on_update(self, delta_time: float):
-        data = self.client_socket.get_data()
-        if self.client_socket and data:
-            self.change_game_state(data)
+        if not self.is_bot_game:
+            data = self.client_socket.get_data()
+            if self.client_socket and data:
+                self.change_game_state(data)
         if self.is_restart:
             self.restart()
             self.is_restart = not self.is_restart
@@ -191,18 +210,22 @@ class Game(arcade.View):
             self.alert_popup_visible = False
             
     def restart(self):
-        self.client_socket.set_data(None)
-        self.window.show_view(Game(self.client_socket, self.thread))
         self.setup()
-        data = {
-            "board": self.board, 
-            "player": None, 
-            "next_player": X_PATTERN, 
-            "is_game_over": False,
-            "is_new_response": True,
-            "is_restart": True
-        }
-        self.client_socket.send_data(data)
+        if self.is_bot_game:
+            self.window.show_view(Game(None, None, True))
+            self.on_draw()
+        else:
+            self.client_socket.set_data(None)
+            self.window.show_view(Game(self.client_socket, self.thread))
+            data = {
+                "board": self.board, 
+                "player": None, 
+                "next_player": X_PATTERN, 
+                "is_game_over": False,
+                "is_new_response": True,
+                "is_restart": True
+            }
+            self.client_socket.send_data(data)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.SPACE:  # Replace with your desired key
@@ -217,11 +240,3 @@ class Game(arcade.View):
 
     def toggle_alert_popup(self):
         self.alert_popup_visible = not self.alert_popup_visible
-
-def main():
-    window = Game()
-    window.setup()
-    window.run()
-
-if __name__ == "__main__":
-    main()
