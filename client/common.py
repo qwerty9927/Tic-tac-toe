@@ -2,7 +2,7 @@ import arcade
 from constants import *
 
 class Button:
-    def __init__(self, text, texture, x, y, button_width, button_height):
+    def __init__(self, text, font_texture, texture, x, y, button_width, button_height):
         self.text = text
         self.x = x
         self.y = y
@@ -13,8 +13,9 @@ class Button:
         self.end_btn_y = self.y + button_height // 2
         self.button_width = button_width
         self.button_height = button_height
+        self.font_texture = font_texture
 
     def draw(self):
         arcade.draw_lrwh_rectangle_textured(self.x - self.button_width // 2, self.y - self.button_height // 2, self.button_width, self.button_height, self.texture)
-        arcade.draw_text(self.text, self.x, self.y, arcade.color.BLACK, font_size=16, anchor_x="center", anchor_y="center")
+        arcade.draw_text(self.text, self.x, self.y, arcade.color.BLACK, font_size=16, anchor_x="center", anchor_y="center", font_name=self.font_texture)
     

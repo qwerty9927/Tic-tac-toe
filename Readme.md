@@ -4,12 +4,16 @@ This is a fun and challenging Tic Tac Toe game written in Python. You can choose
 
 ## Requirements
 
-* Python 3 <= v3.10.9 (Download from [https://www.python.org/downloads/](https://www.python.org/downloads/))
+* Python 3 <= v3.10.10 (Download from [https://www.python.org/downloads/](https://www.python.org/downloads/))
 
 **Installation**
 
   ```bash
-    pip install -r requirements.txt
+    $ git clone https://github.com/qwerty9927/Tic-tac-toe.git
+    $ cd Tic-tac-toe
+    $ python3 -m venv .venv
+    $ source .venv/bin/activate
+    $ pip install -r requirements.txt
   ```
 
 ## Running the Game
@@ -19,11 +23,11 @@ This is a fun and challenging Tic Tac Toe game written in Python. You can choose
   3. Run the script using the following command:
 
   ```bash
-    python ./client/main.py
+    $ python ./client/main.py
   ```
   *Note: Run server when play with human mode*
   ```bash
-    python ./server/server.py
+    $ python ./server/server.py
   ```
   4. The game will launch with a graphical board for an enhanced visual experience.
   
