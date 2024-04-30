@@ -1,9 +1,8 @@
 import socket
 import json
 
-# HOST = '0.tcp.ap.ngrok.io'
-HOST = 'localhost'
-# HOST = '192.168.153.128'
+# Config
+HOST = '192.168.1.14'
 PORT = 4000
 
 

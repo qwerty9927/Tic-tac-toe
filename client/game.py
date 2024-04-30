@@ -9,8 +9,9 @@ from bot.mainBot import MainBot
 
 DIR = path.dirname(path.abspath(__file__))
 
+
 class Game(arcade.View):
-    def __init__(self, socket, thread, is_bot_game = False, window: arcade.Window = None):
+    def __init__(self, socket, thread, is_bot_game=False, window: arcade.Window = None):
         super().__init__(window)
         self.thread = thread
         self.client_socket = socket
@@ -41,12 +42,12 @@ class Game(arcade.View):
         self.setting = Setting()
         self.alert = Alert()
 
-
     def setup(self):
         if self.is_bot_game:
             self.board = np.zeros(shape=(self.size, self.size), dtype=int)
         else:
-            self.board = [[0 for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
+            self.board = [[0 for _ in range(BOARD_SIZE)]
+                          for _ in range(BOARD_SIZE)]
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
         # Load media
@@ -74,10 +75,12 @@ class Game(arcade.View):
     def draw_board(self):
         for i in range(1, BOARD_SIZE):
             # Draw horizontal lines
-            arcade.draw_line(0, i * SQUARE_SIZE, SCREEN_WIDTH, i * SQUARE_SIZE, arcade.color.WHITE_SMOKE, LINE_WIDTH)
+            arcade.draw_line(0, i * SQUARE_SIZE, SCREEN_WIDTH, i *
+                             SQUARE_SIZE, arcade.color.WHITE_SMOKE, LINE_WIDTH)
 
             # Draw vertical lines
-            arcade.draw_line(i * SQUARE_SIZE, 0, i * SQUARE_SIZE, SCREEN_HEIGHT, arcade.color.WHITE_SMOKE, LINE_WIDTH)
+            arcade.draw_line(i * SQUARE_SIZE, 0, i * SQUARE_SIZE,
+                             SCREEN_HEIGHT, arcade.color.WHITE_SMOKE, LINE_WIDTH)
 
     def draw_xo(self):
         for row in range(BOARD_SIZE):
@@ -91,18 +94,20 @@ class Game(arcade.View):
     def draw_x(self, row, column):
         x = column * SQUARE_SIZE
         y = row * SQUARE_SIZE
-        arcade.draw_lrwh_rectangle_textured(x + CELL_PADDING, y + CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, self.x)
+        arcade.draw_lrwh_rectangle_textured(
+            x + CELL_PADDING, y + CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, self.x)
 
     def draw_o(self, row, column):
         x = column * SQUARE_SIZE
         y = row * SQUARE_SIZE
-        arcade.draw_lrwh_rectangle_textured(x + CELL_PADDING, y + CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, self.o)
+        arcade.draw_lrwh_rectangle_textured(
+            x + CELL_PADDING, y + CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, SQUARE_SIZE - 2 * CELL_PADDING, self.o)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if not self.setting_popup_visible and not self.alert_popup_visible:
             if self.is_locked:
                 return
-        
+
             column = x // SQUARE_SIZE
             row = y // SQUARE_SIZE
 
@@ -111,9 +116,9 @@ class Game(arcade.View):
                 self.is_game_over = self.game_over(self.current_player)
                 if not self.is_bot_game:
                     self.client_socket.send_data({
-                        "board": self.board, 
-                        "player": self.current_player, 
-                        "next_player": self.switch_player(), 
+                        "board": self.board,
+                        "player": self.current_player,
+                        "next_player": self.switch_player(),
                         "is_game_over": self.is_game_over,
                         "is_new_response": True,
                         "is_restart": False
@@ -124,7 +129,7 @@ class Game(arcade.View):
                 else:
                     if not self.is_game_over:
                         self.bot_move()
-            
+
         elif self.setting_popup_visible:
             self.setting.control(x, y, self)
         elif self.alert_popup_visible:
@@ -184,7 +189,7 @@ class Game(arcade.View):
                 if self.board[row][col] == 0:
                     return False
         return True
-    
+
     def on_update(self, delta_time: float):
         if not self.is_bot_game:
             data = self.client_socket.get_data()
@@ -208,7 +213,7 @@ class Game(arcade.View):
             data['is_game_over'] = False
         if data['is_restart']:
             self.alert_popup_visible = False
-            
+
     def restart(self):
         self.setup()
         if self.is_bot_game:
@@ -218,9 +223,9 @@ class Game(arcade.View):
             self.client_socket.set_data(None)
             self.window.show_view(Game(self.client_socket, self.thread))
             data = {
-                "board": self.board, 
-                "player": None, 
-                "next_player": X_PATTERN, 
+                "board": self.board,
+                "player": None,
+                "next_player": X_PATTERN,
                 "is_game_over": False,
                 "is_new_response": True,
                 "is_restart": True

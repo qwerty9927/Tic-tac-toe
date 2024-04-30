@@ -2,6 +2,7 @@ import numpy as np
 import time
 from collections import defaultdict
 
+
 class TicTacToe:
     def __init__(self, board, player):
         self.board_size = 3
@@ -54,6 +55,7 @@ class TicTacToe:
             return 1 if self.winner == root.state.current_player else -1
         return 0
 
+
 class MonteCarloTreeSearchNode:
     def __init__(self, state, parent=None, parent_action=None):
         self.state = state
@@ -72,18 +74,14 @@ class MonteCarloTreeSearchNode:
         playout = 0
         count = 0
         time0 = time.time()
-        while count < 5000:
+        while time.time() - time0 <= 2:
             v = self._tree_policy()
             reward = v.rollout()
             v.backpropagate(reward)
             playout += 1
             count += 1
         print("Playout: ", playout)
-        if len(self.children) > 2:
-            result = self.best_child(np.sqrt(2))
-        else:
-            result = self.children[np.argmax([child._number_of_visits for child in self.children])]
-        print(f"N: {result.n()} Q: {result.q()}")
+        result = self.best_child(np.sqrt(2))
         return result.parent_action
 
     def _tree_policy(self):
@@ -108,7 +106,8 @@ class MonteCarloTreeSearchNode:
     def expand(self):
         action = self._untried_actions.pop()
         next_state = self.state.move(action, self.state.board.copy())
-        child_node = MonteCarloTreeSearchNode(next_state, parent=self, parent_action=action)
+        child_node = MonteCarloTreeSearchNode(
+            next_state, parent=self, parent_action=action)
         self.children.append(child_node)
         return child_node
 
@@ -121,15 +120,18 @@ class MonteCarloTreeSearchNode:
         return self._number_of_visits
 
     def best_child(self, c_param=1.41):
-        choices_weights = [(c.q() / c.n()) + c_param * np.sqrt((np.log(self.n()) / c.n())) for c in self.children]
+        choices_weights = [(c.q() / c.n()) + c_param *
+                           np.sqrt((np.log(self.n()) / c.n())) for c in self.children]
         return self.children[np.argmax(choices_weights)]
 
     def rollout(self):
-        rollout_state = TicTacToe(self.state.board.copy(), self.state.current_player)
+        rollout_state = TicTacToe(
+            self.state.board.copy(), self.state.current_player)
         while not rollout_state.is_game_over():
             possible_moves = rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
-            rollout_state = rollout_state.move(action, rollout_state.board.copy())
+            rollout_state = rollout_state.move(
+                action, rollout_state.board.copy())
         return rollout_state.game_result(self)
 
     def rollout_policy(self, possible_moves):
